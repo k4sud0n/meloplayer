@@ -5,30 +5,40 @@ from bs4 import BeautifulSoup
 from openpyxl import load_workbook
 from pytube import YouTube
 
-load_wb = load_workbook('song.xlsx', data_only=True)
-load_ws = load_wb['Sheet']
 
-song_title = []
-song_artist = []
+def download():
+    load_wb = load_workbook('song.xlsx', data_only=True)
+    load_ws = load_wb['Sheet']
 
-URL = 'https://www.youtube.com/results'
+    song_title = []
+    song_artist = []
 
-for row in load_ws['A1':'B50']:
-    row_value = []
+    URL = 'https://www.youtube.com/results'
 
-    for cell in row:
-        row_value.append(cell.value)
+    for row in load_ws['A1':'B50']:
+        row_value = []
 
-    song_title.append(row_value[0])
-    song_artist.append(row_value[1])
+        for cell in row:
+            row_value.append(cell.value)
 
-for i in range(50):
-    params = {'search_query': '%s - %s' % (song_title[i], song_artist[i])}
-    response = requests.get(URL, params=params)
-    html = response.text
-    soup = BeautifulSoup(html, 'html.parser')
-    watch_url = soup.find_all(class_='yt-uix-sessionlink spf-link')[0]['href']
+        song_title.append(row_value[0])
+        song_artist.append(row_value[1])
 
-    youtube = YouTube('https://www.youtube.com' + watch_url)
-    videos = youtube.streams.first()
-    videos.download(os.getcwd() + "/songs")
+    for i in range(50):
+        params = {'search_query': '%s %s' % (song_artist[i], song_title[i])}
+        response = requests.get(URL, params=params)
+        html = response.text
+        soup = BeautifulSoup(html, 'html.parser')
+
+        try:
+            watch_url = soup.find_all(class_='yt-uix-sessionlink spf-link')[0]['href']
+            print(watch_url)
+        except IndexError:
+            pass
+
+        try:
+            youtube = YouTube('https://www.youtube.com' + watch_url)
+            videos = youtube.streams.first()
+            videos.download(os.getcwd() + "\\songs")
+        except KeyError:
+            pass
