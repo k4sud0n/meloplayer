@@ -1,5 +1,6 @@
 import os
 
+import pytube
 import requests
 from bs4 import BeautifulSoup
 from openpyxl import load_workbook
@@ -32,8 +33,9 @@ def download():
 
         try:
             watch_url = soup.find_all(class_='yt-uix-sessionlink spf-link')[0]['href']
-            print(watch_url)
         except IndexError:
+            pass
+        except pytube.exceptions.RegexMatchError:
             pass
 
         try:
