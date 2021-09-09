@@ -14,7 +14,7 @@ python3
 
 1. Github 레포지토리 클론
     ```bash
-    $ git clone https://github.com/legitcode267/meloplayer
+    $ git clone https://github.com/k4sud0n/meloplayer
     ```
 ### 실행
 
